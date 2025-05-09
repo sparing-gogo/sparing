@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Turnamen Mobile Legends</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url('https://wallpapercave.com/wp/wp9768955.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      padding: 20px;
+    }
+    .container {
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .team-input {
+      margin-bottom: 20px;
+    }
+    select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+    }
+    .bracket {
+      margin-top: 30px;
+    }
+    .match {
+      padding: 10px;
+      background-color: #222;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Turnamen Mobile Legends</h1>
+    <h2>Input Tim</h2>
+    <div id="teamInputs"></div>
+    <button onclick="generateBracket()">Buat Bracket Turnamen</button>
+
+    <div class="bracket" id="bracket"></div>
+  </div>
+
+  <script>
+    const teams = 7;
+    const playersPerTeam = 5;
+
+    function createTeamInputs() {
+      const container = document.getElementById('teamInputs');
+      for (let i = 1; i <= teams; i++) {
+        const div = document.createElement('div');
+        div.classList.add('team-input');
+        div.innerHTML = `<h3>Tim ${i}</h3>`;
+        for (let j = 1; j <= playersPerTeam; j++) {
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.placeholder = `Pemain ${j}`;
+          input.id = `team${i}player${j}`;
+          input.required = true;
+          div.appendChild(input);
+        }
+        container.appendChild(div);
+      }
+    }
+
+    function getTeams() {
+      const result = [];
+      for (let i = 1; i <= teams; i++) {
+        const team = [];
+        for (let j = 1; j <= playersPerTeam; j++) {
+          const player = document.getElementById(`team${i}player${j}`).value;
+          team.push(player);
+        }
+        result.push({ name: `Tim ${i}`, players: team });
+      }
+      return result;
+    }
+
+    function generateBracket() {
+      const bracket = document.getElementById('bracket');
+      bracket.innerHTML = '<h2>Bracket Turnamen</h2>';
+      const teamsData = getTeams();
+      const shuffled = teamsData.sort(() => 0.5 - Math.random());
+
+      let matchNum = 1;
+      for (let i = 0; i < shuffled.length - 1; i += 2) {
+        const teamA = shuffled[i];
+        const teamB = shuffled[i + 1];
+        const match = document.createElement('div');
+        match.className = 'match';
+        match.innerText = `Match ${matchNum++}: ${teamA.name} vs ${teamB.name}`;
+        bracket.appendChild(match);
+      }
+
+      if (shuffled.length % 2 !== 0) {
+        const last = shuffled[shuffled.length - 1];
+        const match = document.createElement('div');
+        match.className = 'match';
+        match.innerText = `Tim ${last.name} langsung lolos ke babak selanjutnya`;
+        bracket.appendChild(match);
+      }
+    }
+
+    createTeamInputs();
+  </script>
+</body>
+</html>
